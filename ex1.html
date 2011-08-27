@@ -4,16 +4,62 @@
 <script src="http://paperjs.org/static/js/paper.js" type="text/javascript"></script>
 
 <script type="text/paperscript" canvas="path_canvas" id="paperscope-2">
-var point1 = new Point(50, 50)
-var point2 = new Point(150, 50)
-var path = new Path()
-path.add(point1)
-path.add(point2)
-path.strokeColor = 'black'
-path.selected = true
+  project.currentStyle = {
+    strokeColor: 'green',
+    fillColor: 'black',
+    strokeWidth: 10
+  }
+
+
+
+  var RandomPolygonFucker = Base.extend({
+    initialize: function() {
+      this.path = new Path()
+      this.new_path_points = []
+      for(var i=0; i<6; i++) {
+        this.path.add(Point.random() * view.size)
+        this.new_path_points.push(Point.random() * view.size)
+      }
+
+      this.path.strokeColor = 'black'
+      this.path.closed = true
+      this.path.smooth()
+      this.speed = 10
+    },
+    
+    update: function() {
+      var segments = this.path.segments
+        , len = segments.length
+      for(var i=0; i < len; i++) {
+        segments[i].point.x += (this.new_path_points[i].x - segments[i].point.x) > 0 ? this.speed : -this.speed
+        segments[i].point.y += (this.new_path_points[i].y - segments[i].point.y) > 0 ? this.speed : -this.speed
+        if (Math.abs(this.new_path_points[i].x - segments[i].point.x) < this.speed*10 && Math.abs(this.new_path_points[i].y - segments[i].point.y) < this.speed*10) {
+          this.get_new_direction(i)
+        }
+      }
+    },
+    
+    get_new_direction: function(n) {
+      this.new_path_points[n] = Point.random()*view.size
+    }
+  });
+
+
+
+
+
+
+
+  var polygon_fucker = new RandomPolygonFucker()
+
+  function onFrame(event) {
+    polygon_fucker.update()
+  }
+
 </script>
 
-<canvas id="path_canvas" width="500" height="100"></canvas>
+<div style='text-align:center; background-color:cyan; left:200px; top:200px'>FUCK IT WE'LL DO IT LIVE<br><br><br>LIVE<br><br><a href="javascript:alert('foobar');return false;">asdfasdfasdf</a></div>
+<canvas style='position:absolute; top:0; left:0;' id="path_canvas" width="1000" height="500"></canvas>
 
 
 
