@@ -14,14 +14,17 @@
 
   var RandomPolygonFucker = Base.extend({
     initialize: function() {
+      this.number_of_points = Math.floor(Math.random()*20+6)
       this.path = new Path()
       this.new_path_points = []
-      for(var i=0; i<6; i++) {
+      this.new_path_speed = []
+      for(var i=0; i<this.number_of_points; i++) {
         this.path.add(Point.random() * view.size)
         this.new_path_points.push(Point.random() * view.size)
+        this.new_path_speed.push(Math.random()*100+10)
       }
 
-      this.path.strokeColor = 'black'
+      this.path.strokeColor = 'blue'
       this.path.closed = true
       this.path.smooth()
       this.speed = 1
@@ -29,11 +32,10 @@
     
     update: function() {
       var segments = this.path.segments
-        , len = segments.length
-      for(var i=0; i < len; i++) {
-        segments[i].point.x += (this.new_path_points[i].x - segments[i].point.x) > 0 ? this.speed : -this.speed
-        segments[i].point.y += (this.new_path_points[i].y - segments[i].point.y) > 0 ? this.speed : -this.speed
-        if (Math.abs(this.new_path_points[i].x - segments[i].point.x) < this.speed*10 && Math.abs(this.new_path_points[i].y - segments[i].point.y) < this.speed*10) {
+      for(var i=0; i < this.number_of_points; i++) {
+        segments[i].point.x += (this.new_path_points[i].x - segments[i].point.x) / this.new_path_speed[i]
+        segments[i].point.y += (this.new_path_points[i].y - segments[i].point.y) / this.new_path_speed[i]
+        if (Math.abs(this.new_path_points[i].x - segments[i].point.x) < this.speed*100 && Math.abs(this.new_path_points[i].y - segments[i].point.y) < this.speed*100) {
           this.get_new_direction(i)
         }
       }
@@ -41,6 +43,7 @@
     
     get_new_direction: function(n) {
       this.new_path_points[n] = Point.random()*view.size
+      this.new_path_speed[n] = Math.random()*100+10
     }
   });
 
@@ -58,7 +61,7 @@
 
 </script>
 
-<div style='text-align:center; background-color:cyan; left:200px; top:200px'>FUCK IT WE'LL DO IT LIVE<br><br><br>LIVE<br><br><a href="javascript:alert('foobar');return false;">asdfasdfasdf</a></div>
+<!--<div style='text-align:center; background-color:cyan; left:200px; top:200px'>FUCK IT WE'LL DO IT LIVE<br><br><br>LIVE<br><br><a href="javascript:alert('foobar');return false;">asdfasdfasdf</a></div>-->
 <canvas style='position:absolute; top:0; left:0;' id="path_canvas" width="1000" height="500"></canvas>
 
 
